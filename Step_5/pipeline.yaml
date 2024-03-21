@@ -1,0 +1,26 @@
+trigger:
+- main
+
+name: Deploy Bicep files
+
+variables:
+  vmImageName: 'ubuntu-latest'
+  azureServiceConnection: 'ServiceConnection_BigBudget'
+  resourceGroupName: 'PipeLineStorage'
+  location: 'West Europe'
+  templateFile: './Step_4/main.bicep'
+  storageAccount: 'henrikpipelinestorage'
+pool:
+  vmImage: $(vmImageName)
+
+steps:
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Subscription'
+    subscriptionId: '0548f072-39c5-4986-864d-14d0395af3b7'
+    azureResourceManagerConnection: '$(azureServiceConnection)'
+    location: '$(location)'
+    templateLocation: 'Linked artifact'
+    csmFile: '$(templateFile)'
+    deploymentMode: 'Incremental'
+    deploymentName: 'DeployPipelineTemplate'
